@@ -1,5 +1,9 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    
-]
+from tasks import views
+
+router = DefaultRouter()
+router.register('categories', views.CategoryViewSet, basename='category')
+
+urlpatterns = router.urls

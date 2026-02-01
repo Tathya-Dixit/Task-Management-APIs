@@ -1,3 +1,35 @@
 from django.shortcuts import render
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 
-# Create your views here.
+import logging
+
+from tasks.models import Category, Task
+from tasks.serializers import CategorySerializer
+
+logger = logging.getLogger(__name__)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.filter(user = self.request.user)
+    
+    def perform_create(self, serializer):
+        logger.info(f"User - {self.request.user} creating category")
+        serializer.save(user = self.request.user)
+        logger.info(f"Category created : {serializer.instance.name}")
+    
+    def perform_update(self, serializer):
+        logger.info(f"Updating category: {serializer.instance.name}")
+        serializer.save()
+        logger.info(f"Category updated: {serializer.instance.name}")
+    
+    def perform_destroy(self, instance):
+        logger.info(f"Deleting category: {instance.name}")
+        instance.delete()
+        logger.info(f"Category deleted: {instance.name}")
+        
+    
+
