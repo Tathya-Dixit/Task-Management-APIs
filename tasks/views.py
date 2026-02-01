@@ -5,7 +5,7 @@ from rest_framework.response import Response
 import logging
 
 from tasks.models import Category, Task
-from tasks.serializers import CategorySerializer
+from tasks.serializers import CategorySerializer, TaskSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -32,4 +32,25 @@ class CategoryViewSet(viewsets.ModelViewSet):
         logger.info(f"Category deleted: {instance.name}")
         
     
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.filter(user = self.request.user)
+    
+    def perform_create(self, serializer):
+        logger.info(f"User - {self.request.user} creating task")
+        serializer.save(user = self.request.user)
+        logger.info(f"Task created : {serializer.instance.title}")
+    
+    def perform_update(self, serializer):
+        logger.info(f"Updating task: {serializer.instance.title}")
+        serializer.save()
+        logger.info(f"Task updated: {serializer.instance.title}")
+    
+    def perform_destroy(self, instance):
+        logger.info(f"Deleting task: {instance.title}")
+        instance.delete()
+        logger.info(f"Task deleted: {instance.title}")
+        
 
