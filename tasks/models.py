@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
+
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
@@ -36,5 +40,13 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.status}"
+    
+
+@receiver(pre_save, sender=Task)
+def set_done_date(sender, instance, **kwargs):
+    if instance.status == Task.Status.DONE and not instance.done_date:
+        instance.done_date = timezone.now()
+    elif instance.status != Task.Status.DONE:
+        instance.done_date = None
     
 
