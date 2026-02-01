@@ -34,6 +34,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
+    filterset_fields = ['status', 'priority', 'category']
+    search_fields = ['title', 'description']
+    ordering_fields = ['due_date', 'created_at', 'priority']
+    ordering = ['-created_at']
 
     def get_queryset(self):
         return Task.objects.filter(user = self.request.user)
