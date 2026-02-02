@@ -19,7 +19,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id','title','description','category','category_details','priority','status','due_date','done_date','created_at']
-        read_only_fields = ['created_at']
+        read_only_fields = ['created_at', 'done_date']
 
     def validate_category(self, value):
         if value and (value.user != self.context['request'].user):

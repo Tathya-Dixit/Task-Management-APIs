@@ -37,7 +37,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status', 'priority', 'category']
     search_fields = ['title', 'description']
     ordering_fields = ['due_date', 'created_at', 'priority']
-    ordering = ['-created_at']
+    ordering = ['-created_at', '-priority']
 
     def get_queryset(self):
         return Task.objects.filter(user = self.request.user)
